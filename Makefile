@@ -29,7 +29,7 @@ clean:
 	rm -f $(ALL_STEPS) *.o
 	cd tinycc && make clean
 
-test: test0 test1 test2 test3 test4 test5 test6 test7 test8 test9 testA test-self-hosted test_malcc
+test: test0 test1 test2 test3 test4 test5 test6 test7 test8 test9 testA test-malcc test-self-hosted test-supplemental
 
 RUN_TEST_CMD=mal/runtest.py --rundir mal/tests --hard --deferrable --optional --start-timeout 1 --test-timeout 1
 
@@ -75,7 +75,7 @@ testA: all
 	$(RUN_TEST_CMD) step9_try.mal ../../stepA_mal
 	$(RUN_TEST_CMD) stepA_mal.mal ../../stepA_mal
 
-test_malcc: all
+test-malcc: all
 	$(RUN_TEST_CMD) step2_eval.mal ../../malcc
 	$(RUN_TEST_CMD) step3_env.mal ../../malcc
 	$(RUN_TEST_CMD) step4_if_fn_do.mal ../../malcc
@@ -96,6 +96,9 @@ test-self-hosted: all
 	$(RUN_TEST_CMD) --test-timeout 30 step8_macros.mal ../../self_hosted_run
 	$(RUN_TEST_CMD) --test-timeout 30 step9_try.mal ../../self_hosted_run
 	$(RUN_TEST_CMD) --test-timeout 30 stepA_mal.mal ../../self_hosted_run
+
+test-supplemental: all
+	$(RUN_TEST_CMD) --test-timeout 30 ../../tests/unicode.mal ../../malcc
 
 perf: all
 	cd mal/tests && ../../malcc perf1.mal && ../../malcc perf2.mal && ../../malcc perf3.mal

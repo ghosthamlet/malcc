@@ -922,7 +922,11 @@ char* PRINT(MalType *ast) {
 }
 
 char* rep(char *str, MalEnv *repl_env) {
-  MalType *result = EVAL(READ(str), repl_env);
+  MalType *ast = READ(str);
+  if (is_error(ast)) {
+    return PRINT(mal_sprintf("ERROR: %s\n", pr_str(ast->error_val, 0)));
+  }
+  MalType *result = EVAL(ast, repl_env);
   if (is_error(result)) {
     return PRINT(mal_sprintf("ERROR: %s\n", pr_str(result->error_val, 0)));
   } else {
