@@ -10,7 +10,7 @@ sources:
 tasks:
   - build: |
       cd malcc
-      make all
+      make -e CEXTRAFLAGS='-DNOEDITLINE' all
   - test: |
       cd malcc
       make test

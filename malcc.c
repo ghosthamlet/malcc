@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <editline/readline.h>
 #include <gc.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,6 +10,7 @@
 #include "env.h"
 #include "printer.h"
 #include "reader.h"
+#include "readline.h"
 #include "util.h"
 
 char program_template[] =

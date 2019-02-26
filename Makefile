@@ -1,6 +1,6 @@
 OS:=$(shell uname)
 CC=gcc
-CFLAGS=-Itinycc -Wall -Wextra -Werror -g
+CFLAGS=-Itinycc -Wall -Wextra -Werror -g $(CEXTRAFLAGS)
 LDLIBS=-ledit -lgc -lpcre -ldl
 
 ALL_STEPS=step0_repl step1_read_print step2_eval step3_env step4_if_fn_do step5_tco step6_file step7_quote step8_macros step9_try stepA_mal malcc
@@ -20,7 +20,7 @@ step7_quote: step7_quote.o core.o env.o hashmap.o printer.o reader.o types.o uti
 step8_macros: step8_macros.o core.o env.o hashmap.o printer.o reader.o types.o util.o tinycc/libtcc.a
 step9_try: step9_try.o core.o env.o hashmap.o printer.o reader.o types.o util.o tinycc/libtcc.a
 stepA_mal: stepA_mal.o core.o env.o hashmap.o printer.o reader.o types.o util.o tinycc/libtcc.a
-malcc: malcc.o core.o env.o hashmap.o printer.o reader.o types.o util.o tinycc/libtcc.a
+malcc: malcc.o core.o env.o hashmap.o printer.o reader.o readline.o types.o util.o tinycc/libtcc.a
 
 tinycc/libtcc.a:
 	cd tinycc && ./configure && make
@@ -98,7 +98,7 @@ test-self-hosted: all
 	$(RUN_TEST_CMD) --test-timeout 30 stepA_mal.mal ../../self_hosted_run
 
 test-supplemental: all
-	$(RUN_TEST_CMD) --test-timeout 30 ../../tests/unicode.mal ../../malcc
+	$(RUN_TEST_CMD) --test-timeout 30 ../../tests/utf-8.mal ../../malcc
 
 perf: all
 	cd mal/tests && ../../malcc perf1.mal && ../../malcc perf2.mal && ../../malcc perf3.mal
@@ -115,7 +115,10 @@ docker-bash: docker-build
 	$(RUN_DOCKER_CMD) bash
 
 docker-test: docker-build
-	$(RUN_DOCKER_CMD) make test
+	$(RUN_DOCKER_CMD) make -e CEXTRAFLAGS='-DNOEDITLINE' test
+
+docker-test-supplemental: docker-build
+	$(RUN_DOCKER_CMD) make -e CEXTRAFLAGS='-DNOEDITLINE' test-supplemental
 
 docker-watch: docker-build
 	$(RUN_DOCKER_CMD) bash -c "ls *.c *.h Makefile | entr -c -s 'make test'"

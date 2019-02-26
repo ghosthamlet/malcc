@@ -18,6 +18,10 @@ RUN cd /tmp && \
     ./configure && \
     make install
 
+ENV LANG C.UTF-8
+ENV LC_CTYPE C.UTF-8
+ENV LC_ALL C.UTF-8
+
 WORKDIR /malcc
 
 CMD ["bash"]
