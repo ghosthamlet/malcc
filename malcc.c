@@ -1,16 +1,17 @@
 #include <assert.h>
+#include <editline/readline.h>
 #include <gc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <libtcc.h>
+#include <locale.h>
 
 #include "core.h"
 #include "env.h"
 #include "printer.h"
 #include "reader.h"
-#include "readline.h"
 #include "util.h"
 
 char program_template[] =
@@ -1022,6 +1023,8 @@ int main(int argc, char *argv[]) {
   env_set(repl_env, "*ARGV*", mal_args);
 
   rep(builtin_defs, repl_env);
+
+  setlocale(LC_ALL, ""); // use locale set from environment
 
   if (mal_vector_len(arg_vec) >= 1) {
     rep(mal_sprintf("(load-file %s)", pr_str(mal_vector_ref(arg_vec, 0), 1))->str, repl_env);

@@ -1,7 +1,7 @@
 OS:=$(shell uname)
 CC=gcc
-CFLAGS=-Itinycc -Wall -Wextra -Werror -g $(CEXTRAFLAGS)
-LDLIBS=-ledit -lgc -lpcre -ldl
+CFLAGS=-Itinycc -Wall -Wextra -Werror -g
+LDLIBS=-ledit -ltermcap -lgc -lpcre -ldl
 
 ALL_STEPS=step0_repl step1_read_print step2_eval step3_env step4_if_fn_do step5_tco step6_file step7_quote step8_macros step9_try stepA_mal malcc
 
@@ -20,7 +20,7 @@ step7_quote: step7_quote.o core.o env.o hashmap.o printer.o reader.o types.o uti
 step8_macros: step8_macros.o core.o env.o hashmap.o printer.o reader.o types.o util.o tinycc/libtcc.a
 step9_try: step9_try.o core.o env.o hashmap.o printer.o reader.o types.o util.o tinycc/libtcc.a
 stepA_mal: stepA_mal.o core.o env.o hashmap.o printer.o reader.o types.o util.o tinycc/libtcc.a
-malcc: malcc.o core.o env.o hashmap.o printer.o reader.o readline.o types.o util.o tinycc/libtcc.a
+malcc: malcc.o core.o env.o hashmap.o printer.o reader.o types.o util.o tinycc/libtcc.a
 
 tinycc/libtcc.a:
 	cd tinycc && ./configure && make
@@ -115,10 +115,10 @@ docker-bash: docker-build
 	$(RUN_DOCKER_CMD) bash
 
 docker-test: docker-build
-	$(RUN_DOCKER_CMD) make -e CEXTRAFLAGS='-DNOEDITLINE' test
+	$(RUN_DOCKER_CMD) make test
 
 docker-test-supplemental: docker-build
-	$(RUN_DOCKER_CMD) make -e CEXTRAFLAGS='-DNOEDITLINE' test-supplemental
+	$(RUN_DOCKER_CMD) make test-supplemental
 
 docker-watch: docker-build
 	$(RUN_DOCKER_CMD) bash -c "ls *.c *.h Makefile | entr -c -s 'make test'"
